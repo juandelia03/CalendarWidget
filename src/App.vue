@@ -20,7 +20,19 @@
         "
       />
     </div>
-    <FinalScreen v-if="steps.step3" :client="clientInformation" :date="fecha" />
+    <FinalScreen
+      v-if="steps.step3"
+      :client="clientInformation"
+      :date="fecha"
+      @cancel="
+        () => {
+          steps.step1 = true;
+          steps.step2 = false;
+          steps.step3 = false;
+        }
+      "
+      @submit="pushToDb"
+    />
   </div>
   <router-view />
 </template>
@@ -62,6 +74,12 @@ export default {
       this.clientInformation = e;
       this.steps.step1 = false;
       this.steps.step2 = true;
+    },
+    pushToDb() {
+      let each = this.fecha.toString().split(" ");
+      each = [each[0], each[1], each[2], each[3]];
+      each = each.join("-");
+      console.log(this.clientInformation, this.fecha, each);
     },
   },
 };

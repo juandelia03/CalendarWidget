@@ -3,7 +3,10 @@
     <div class="box">
       <h1 class="titulo">Un último paso</h1>
       <p class="sub">Confirma si la siguiente información es correcta para agendar la cita:</p>
-      <p class="fecha">{{ date }}</p>
+      <p class="fecha">
+        {{ days[date.getDay() - 1] }}
+        {{ date.getDate() }} {{ months[date.getMonth()] }} {{ date.getFullYear() }}
+      </p>
       <div class="information">
         <p class="item">Name: {{ client.name }}</p>
         <p class="item">Apellido: {{ client.last }}</p>
@@ -11,8 +14,8 @@
         <p class="item">Email: {{ client.email }}</p>
       </div>
       <div class="botones">
-        <button class="boton">Cancelar</button>
-        <button class="boton">Confirmar</button>
+        <button class="boton" @click="$emit('cancel')">Cancelar</button>
+        <button class="boton" @click="$emit('submit')">Confirmar</button>
       </div>
     </div>
   </div>
@@ -24,6 +27,25 @@ export default {
   props: {
     client: Object,
     date: String,
+  },
+  data() {
+    return {
+      months: [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ],
+      days: ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"],
+    };
   },
 };
 </script>
