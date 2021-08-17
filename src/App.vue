@@ -12,8 +12,15 @@
             steps.step2 = false;
           }
         "
+        @nextToEnd="
+          () => {
+            steps.step2 = false;
+            steps.step3 = true;
+          }
+        "
       />
     </div>
+    <FinalScreen v-if="steps.step3" :client="clientInformation" :date="fecha" />
   </div>
   <router-view />
 </template>
@@ -22,19 +29,27 @@
 /* eslint-disable */
 import CalendarComponent from "./components/Calendar.vue";
 import Information from "./components/Information.vue";
+import FinalScreen from "./components/FinalScreen.vue";
 export default {
   name: "App",
   components: {
     CalendarComponent,
     Information,
+    FinalScreen,
   },
   data() {
     return {
       fecha: "",
-      clientInformation: {},
+      clientInformation: {
+        name: "Juan",
+        last: "D'elia",
+        cell: "+5491138457068",
+        email: "juan@gmail.com",
+        message: "",
+      },
       steps: {
-        step1: false,
-        step2: true,
+        step1: true,
+        step2: false,
         step3: false,
       },
     };
