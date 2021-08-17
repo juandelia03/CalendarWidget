@@ -2,8 +2,9 @@
   <div id="nav">
     <!-- <router-link to="/">Home</router-link>  -->
     <!-- <router-link to="/about">About</router-link> -->
-    <div class="view">
-      <CalendarComponent @dateSelected="newDate" v-if="false" />
+    <Information />
+    <div class="view" v-if="false">
+      <CalendarComponent @dateSelected="newDate" />
     </div>
   </div>
   <router-view />
@@ -12,10 +13,12 @@
 <script>
 /* eslint-disable */
 import CalendarComponent from "./components/Calendar.vue";
+import Information from "./components/Information.vue";
 export default {
   name: "App",
   components: {
     CalendarComponent,
+    Information,
   },
   data() {
     return {

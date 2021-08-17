@@ -1,0 +1,155 @@
+<template>
+  <div className="App">
+    <div className="title">
+      <h1 className="Bigtext">Formulario</h1>
+    </div>
+    <div className="main">
+      <div className="subtitle">
+        <h2>Datos Personales</h2>
+      </div>
+      <form action="" @submit.prevent="formSubmit">
+        <div className="section">
+          <input type="text" className="input-data" placeholder=" " />
+          <label className="data">*Nombre</label>
+        </div>
+        <div className="section">
+          <input type="text" className="input-data" placeholder=" " />
+          <label className="data">*Apellido</label>
+        </div>
+        <div className="section">
+          <input type="text" className="input-data" placeholder=" " />
+          <label className="data">*Número Telefónico</label>
+        </div>
+        <div className="section">
+          <input type="text" className="input-data" placeholder=" " />
+          <label className="data">*Email</label>
+        </div>
+        <div className="section">
+          <input type="text" className="input-data" placeholder=" " />
+          <label className="data">Mensaje</label>
+        </div>
+        <div className="button-container">
+          <input className="button" type="submit" />
+        </div>
+      </form>
+    </div>
+  </div>
+</template>
+
+<script>
+/* eslint-disable */
+export default {
+  name: "Information",
+  components: {},
+  data() {
+    return {
+      name: "",
+      last: "",
+      cell: "",
+      email: "",
+      message: "",
+    };
+  },
+  methods: {
+    formSubmit() {},
+  },
+};
+</script>
+
+<style scoped>
+.title {
+  display: flex;
+  align-items: center;
+  background-color: black;
+  height: 100px;
+  padding-left: 50px;
+}
+.Bigtext {
+  color: white;
+  margin: 0;
+  padding: 0;
+  padding: 0px;
+}
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-top: 50px;
+}
+.subtitle {
+  width: 90%;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  padding-left: 40px;
+}
+h2 {
+  font-size: 30px;
+}
+form {
+  position: relative;
+}
+
+.section {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+}
+.data {
+  position: absolute;
+  left: 0;
+  font-size: 20px;
+  /* min-width: 100px; */
+  padding: 0px 10px;
+  transition: transform 0.2s ease-in-out;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.input-data {
+  min-width: 60vmin;
+  height: 40px;
+  outline: none;
+  padding: 0px 10px;
+  font-size: 16px;
+  padding-top: 14px;
+}
+.button {
+  width: 100px;
+  height: 40px;
+  margin-top: 50px;
+  background-color: white;
+  color: black;
+  outline: none;
+  border: none;
+  border: solid lightgray 1px;
+  border-radius: 50px;
+  font-size: 16px;
+  font-weight: 400;
+  cursor: pointer;
+}
+.button:hover {
+  background-color: whitesmoke;
+}
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+.input-data:focus + .data,
+.input-data:not(:placeholder-shown) + .data {
+  transform: translateY(-1em);
+  font-size: 14px;
+}
+
+.input-data::placeholder {
+  color: transparent;
+}
+</style>
