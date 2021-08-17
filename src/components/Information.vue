@@ -39,6 +39,7 @@
 
 <script>
 /* eslint-disable */
+import Swal from "sweetalert2";
 export default {
   name: "Information",
   components: {},
@@ -72,7 +73,12 @@ export default {
         this.personalInfo = data;
         this.$emit("infoSubmited", this.personalInfo);
       } else {
-        this.error = "Missing information";
+        Swal.fire({
+          title: "Error!",
+          text: "Missing information",
+          icon: "error",
+          confirmButtonText: "Close",
+        });
       }
     },
   },

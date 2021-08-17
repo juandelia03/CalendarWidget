@@ -12,12 +12,7 @@
             steps.step2 = false;
           }
         "
-        @nextToEnd="
-          () => {
-            steps.step2 = false;
-            steps.step3 = true;
-          }
-        "
+        @nextToEnd="end"
       />
     </div>
     <FinalScreen
@@ -42,6 +37,9 @@
 import CalendarComponent from "./components/Calendar.vue";
 import Information from "./components/Information.vue";
 import FinalScreen from "./components/FinalScreen.vue";
+import firebase from "firebase/app";
+import firestore from "firebase/firestore";
+import Swal from "sweetalert2";
 export default {
   name: "App",
   components: {
@@ -51,7 +49,8 @@ export default {
   },
   data() {
     return {
-      fecha: "",
+      db: [],
+      fecha: new Date(),
       clientInformation: {
         name: "Juan",
         last: "D'elia",
@@ -80,7 +79,65 @@ export default {
       each = [each[0], each[1], each[2], each[3]];
       each = each.join("-");
       console.log(this.clientInformation, this.fecha, each);
+      firebase
+        .firestore()
+        .collection("apointments")
+        .add({
+          ClientsInfo: this.clientInformation,
+          date: this.fecha,
+          parsedDate: each,
+        })
+        .then(() => {
+          Swal.fire({
+            title: "Done!",
+            text: "Your appointment was booked",
+            icon: "success",
+            confirmButtonText: "Close",
+          });
+          setTimeout(() => {
+            location.reload();
+          }, 1000);
+        })
+        .catch(() => {
+          Swal.fire({
+            title: "Error!",
+            text: "An error ocurred",
+            icon: "error",
+            confirmButtonText: "Close",
+          });
+          setTimeout(() => {
+            location.reload();
+          }, 1000);
+        });
     },
+    end() {
+      if (this.fecha >= new Date()) {
+        this.steps.step2 = false;
+        this.steps.step3 = true;
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: "You can not pick a date in the past",
+          icon: "error",
+          confirmButtonText: "Close",
+        });
+      }
+    },
+  },
+  created() {
+    firebase
+      .firestore()
+      .collection("apointments")
+      .orderBy("date")
+      .get()
+      .then((query) => {
+        query.forEach((doc) => {
+          this.db.push(doc.data());
+        });
+      });
+    // .then(() => {
+    //   console.log(this.db[0].date);
+    // });
   },
 };
 </script>

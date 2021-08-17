@@ -15,7 +15,7 @@
       </div>
       <div class="botones">
         <button class="boton" @click="$emit('cancel')">Cancelar</button>
-        <button class="boton" @click="$emit('submit')">Confirmar</button>
+        <button class="boton" @click.once="$emit('submit')">Confirmar</button>
       </div>
     </div>
   </div>
@@ -26,7 +26,7 @@ export default {
   name: "FinalScreen",
   props: {
     client: Object,
-    date: String,
+    date: Date,
   },
   data() {
     return {

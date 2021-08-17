@@ -10,12 +10,11 @@
         :rows="2"
         style="margin-top: 40px"
       />
-      <p class="succes">This date is available!</p>
     </div>
     <div class="buttons">
       <button class="back" @click="$emit('backToForm')">Back</button>
       <button class="button">Check</button>
-      <button class="button" @click="$emit('nextToEnd')">Next</button>
+      <button class="button" @click="$emit('nextToEnd', date)">Next</button>
     </div>
   </div>
 </template>
@@ -31,7 +30,7 @@ export default {
   },
   data() {
     return {
-      date: new Date(),
+      date: "",
       stretch: true,
     };
   },
