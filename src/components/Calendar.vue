@@ -13,7 +13,7 @@
       <p class="succes">This date is available!</p>
     </div>
     <div class="buttons">
-      <button class="back">Back</button>
+      <button class="back" @click="$emit('backToForm')">Back</button>
       <button class="button">Check</button>
       <button class="button">Next</button>
     </div>

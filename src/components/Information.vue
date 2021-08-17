@@ -1,31 +1,32 @@
 <template>
   <div className="App">
     <div className="title">
-      <h1 className="Bigtext">Formulario</h1>
+      <h1 className="Bigtext">Formulario de contacto</h1>
     </div>
     <div className="main">
       <div className="subtitle">
         <h2>Datos Personales</h2>
       </div>
       <form action="" @submit.prevent="formSubmit">
+        <p class="err">{{ error }}</p>
         <div className="section">
-          <input type="text" className="input-data" placeholder=" " />
+          <input type="text" className="input-data" placeholder=" " v-model="name" />
           <label className="data">*Nombre</label>
         </div>
         <div className="section">
-          <input type="text" className="input-data" placeholder=" " />
+          <input type="text" className="input-data" placeholder=" " v-model="last" />
           <label className="data">*Apellido</label>
         </div>
         <div className="section">
-          <input type="text" className="input-data" placeholder=" " />
+          <input type="text" className="input-data" placeholder=" " v-model="cell" />
           <label className="data">*Número Telefónico</label>
         </div>
         <div className="section">
-          <input type="text" className="input-data" placeholder=" " />
+          <input type="text" className="input-data" placeholder=" " v-model="email" />
           <label className="data">*Email</label>
         </div>
         <div className="section">
-          <input type="text" className="input-data" placeholder=" " />
+          <input type="text" className="input-data" placeholder=" " v-model="message" />
           <label className="data">Mensaje</label>
         </div>
         <div className="button-container">
@@ -48,10 +49,32 @@ export default {
       cell: "",
       email: "",
       message: "",
+      personalInfo: {},
+      error: "",
     };
   },
   methods: {
-    formSubmit() {},
+    formSubmit() {
+      this.error = "";
+      if (
+        this.name.length > 1 &&
+        this.last.length > 1 &&
+        this.cell.length > 5 &&
+        this.email.includes("@")
+      ) {
+        const data = {
+          name: this.name,
+          last: this.last,
+          cell: this.cell,
+          email: this.email,
+          message: this.message,
+        };
+        this.personalInfo = data;
+        this.$emit("infoSubmited", this.personalInfo);
+      } else {
+        this.error = "Missing information";
+      }
+    },
   },
 };
 </script>
@@ -151,5 +174,10 @@ form {
 
 .input-data::placeholder {
   color: transparent;
+}
+.err {
+  position: relative;
+  top: 30px;
+  color: red;
 }
 </style>

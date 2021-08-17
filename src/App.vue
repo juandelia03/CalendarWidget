@@ -2,9 +2,17 @@
   <div id="nav">
     <!-- <router-link to="/">Home</router-link>  -->
     <!-- <router-link to="/about">About</router-link> -->
-    <Information />
-    <div class="view" v-if="false">
-      <CalendarComponent @dateSelected="newDate" />
+    <Information @infoSubmited="personalInfo" v-if="steps.step1" />
+    <div class="view" v-if="steps.step2">
+      <CalendarComponent
+        @dateSelected="newDate"
+        @backToForm="
+          () => {
+            steps.step1 = true;
+            steps.step2 = false;
+          }
+        "
+      />
     </div>
   </div>
   <router-view />
@@ -23,11 +31,22 @@ export default {
   data() {
     return {
       fecha: "",
+      clientInformation: {},
+      steps: {
+        step1: false,
+        step2: true,
+        step3: false,
+      },
     };
   },
   methods: {
     newDate(e) {
       this.fecha = e;
+    },
+    personalInfo(e) {
+      this.clientInformation = e;
+      this.steps.step1 = false;
+      this.steps.step2 = true;
     },
   },
 };
