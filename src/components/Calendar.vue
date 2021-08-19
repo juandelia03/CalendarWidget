@@ -14,7 +14,7 @@
     </div>
     <div class="buttons">
       <button class="back" @click="$emit('backToForm')">Back</button>
-      <button class="button">Check</button>
+      <button class="button" @click="$emit('check')">Check</button>
       <button class="button" @click="$emit('nextToEnd', date)">Next</button>
     </div>
   </div>

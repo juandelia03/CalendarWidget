@@ -5,7 +5,7 @@
       <p class="sub">Confirma si la siguiente información es correcta para agendar la cita:</p>
       <p class="fecha">
         {{ days[date.getDay() - 1] }}
-        {{ date.getDate() }} {{ months[date.getMonth()] }} {{ date.getFullYear() }}
+        {{ date.getDate() }} {{ months[date.getMonth()] }} {{ date.getFullYear() }} {{ hora }}:00 hs
       </p>
       <div class="information">
         <p class="item">Name: {{ client.name }}</p>
@@ -29,6 +29,7 @@ export default {
   props: {
     client: Object,
     date: Date,
+    hora: String,
   },
   data() {
     return {

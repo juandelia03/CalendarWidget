@@ -13,12 +13,14 @@
           }
         "
         @nextToEnd="end"
+        @check="checkAvailabilty"
       />
     </div>
     <FinalScreen
       v-if="steps.step3"
       :client="clientInformation"
       :date="fecha"
+      :hora="hour"
       @cancel="
         () => {
           steps.step1 = true;
@@ -252,6 +254,44 @@ export default {
             });
           });
       });
+    },
+    checkAvailabilty() {
+      firebase
+        .firestore()
+        .collection("idCounter")
+        .doc(this.clientInformation.id.trim().replace(/[^0-9]/g, ""))
+        .get()
+        .then(() => {
+          let dayRepeated = 0;
+          let each = this.fecha.toString().split(" ");
+          each = [each[0], each[1], each[2], each[3]];
+          each = each.join("-");
+          this.db.forEach((item) => {
+            if (each == item.parsedDate) {
+              dayRepeated++;
+            }
+          });
+          //variable a cambiar para maximo de reservas por dia
+          if (dayRepeated >= 3) {
+            Swal.fire({
+              title: "Día ocupado!",
+              text: "Lo sentimos no hay más turnos para este día",
+              icon: "error",
+              confirmButtonText: "Cerrar",
+              position: "top-right",
+              toast: true,
+            });
+          } else {
+            Swal.fire({
+              title: "Día Libre",
+              text: "",
+              icon: "success",
+              confirmButtonText: "Aceptar",
+              position: "top-right",
+              toast: true,
+            });
+          }
+        });
     },
   },
   created() {
