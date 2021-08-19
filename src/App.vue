@@ -51,11 +51,12 @@ export default {
     return {
       db: [],
       fecha: new Date(),
+      hour: "",
       clientInformation: {
-        name: "Juan",
-        last: "D'elia",
-        cell: "+5491138457068",
-        email: "juan@gmail.com",
+        name: "",
+        last: "",
+        cell: "",
+        email: "",
         message: "",
       },
       steps: {
@@ -66,38 +67,58 @@ export default {
     };
   },
   methods: {
+    //guarda la fecha
     newDate(e) {
       this.fecha = e;
+      this.hour = this.fecha.getHours().toString();
     },
+    //personalInfo guarda la data del usuario y pasa al calendario
     personalInfo(e) {
       this.clientInformation = e;
       this.steps.step1 = false;
       this.steps.step2 = true;
+      window.scrollTo(0, 0);
     },
-    pushToDb() {
+    //pushToDb corre las funciones necesarias al momento de hacer una reserva
+    async pushToDb() {
+      this.add();
+      this.idCounter();
+      Swal.fire({
+        title: "Done!",
+        text: "Your appointment was booked",
+        icon: "success",
+        confirmButtonText: "Close",
+      });
+      // setTimeout(() => {
+      //   location.reload();
+      // }, 3000);
+    },
+    //add pushea a la db cada objeto de reserva (pseudo func)
+    add() {
       let each = this.fecha.toString().split(" ");
       each = [each[0], each[1], each[2], each[3]];
       each = each.join("-");
-      console.log(this.clientInformation, this.fecha, each);
       firebase
         .firestore()
-        .collection("apointments")
-        .add({
+        .collection("appointments")
+        .doc(this.clientInformation.patente.toUpperCase().replace(/[^\w\s!?]/g, ""))
+        .set({
           ClientsInfo: this.clientInformation,
           date: this.fecha,
           parsedDate: each,
+          hour: this.hour,
         })
-        .then(() => {
-          Swal.fire({
-            title: "Done!",
-            text: "Your appointment was booked",
-            icon: "success",
-            confirmButtonText: "Close",
-          });
-          setTimeout(() => {
-            location.reload();
-          }, 1000);
-        })
+        // .then(() => {
+        //   Swal.fire({
+        //     title: "Done!",
+        //     text: "Your appointment was booked",
+        //     icon: "success",
+        //     confirmButtonText: "Close",
+        //   });
+        //   setTimeout(() => {
+        //     location.reload();
+        //   }, 1000);
+        // })
         .catch(() => {
           Swal.fire({
             title: "Error!",
@@ -110,24 +131,139 @@ export default {
           }, 1000);
         });
     },
-    end() {
-      if (this.fecha >= new Date()) {
-        this.steps.step2 = false;
-        this.steps.step3 = true;
-      } else {
-        Swal.fire({
-          title: "Error!",
-          text: "You can not pick a date in the past",
-          icon: "error",
-          confirmButtonText: "Close",
-        });
+    //Id counter actualiza el contador de id al final de cada pedido (pseudo func)
+    idCounter() {
+      const id = this.clientInformation.id.trim().replace(/[^0-9]/g, "");
+      let counter = 0;
+      let alreadyIs = false;
+      this.db.forEach((item) => {
+        if (item.ClientsInfo.id == id) {
+          counter++;
+          if (
+            item.ClientsInfo.patente.toUpperCase().replace(/[^\w\s!?]/g, "") ==
+            this.clientInformation.patente.toUpperCase().replace(/[^\w\s!?]/g, "")
+          ) {
+            alreadyIs = true;
+          }
+        }
+      });
+      if (alreadyIs == false) {
+        counter++;
       }
+      firebase
+        .firestore()
+        .collection("idCounter")
+        .doc(id)
+        .update({ counter: counter })
+        .catch((e) => {
+          firebase
+            .firestore()
+            .collection("idCounter")
+            .doc(id.replace(/\s/g, ""))
+            .set({ counter: counter });
+        });
+    },
+    // End es la funcion que pasa a la pantalla de fin (main func)
+    async end() {
+      let count = 0;
+      firebase
+        .firestore()
+        .collection("idCounter")
+        .doc(this.clientInformation.id.trim().replace(/[^0-9]/g, ""))
+        .get()
+        .then((doc) => {
+          count = doc.data().counter;
+        })
+        .then(() => {
+          let dayRepeated = 0;
+          let each = this.fecha.toString().split(" ");
+          each = [each[0], each[1], each[2], each[3]];
+          each = each.join("-");
+          this.db.forEach((item) => {
+            if (each == item.parsedDate) {
+              dayRepeated++;
+            }
+          });
+          //variable a cambiar para maximo de reservas por dia
+          if (dayRepeated >= 3) {
+            Swal.fire({
+              title: "Día ocupado!",
+              text: "Lo sentimos no hay más turnos para este día",
+              icon: "error",
+              confirmButtonText: "Cerrar",
+            });
+          } else {
+            console.log(dayRepeated);
+            //El valor que hay que cambiar para el maximo de carros por id
+            if (count < 3) {
+              if (this.fecha >= new Date()) {
+                this.steps.step2 = false;
+                this.steps.step3 = true;
+              } else {
+                Swal.fire({
+                  title: "Error!",
+                  text: "No puedes elegir una fecha del pasado",
+                  icon: "error",
+                  confirmButtonText: "Close",
+                });
+              }
+            } else {
+              this.checkbyId();
+            }
+          }
+        });
+    },
+    //checkbyId chequea si un id tiene mas de 3 reservas y administra el delete de la deseada
+    async checkbyId() {
+      let options = [];
+      let dlt = "";
+      this.db.forEach((item) => {
+        if (item.ClientsInfo.id == this.clientInformation.id.trim().replace(/[^0-9]/g, "")) {
+          options.push(item.ClientsInfo.patente.toUpperCase());
+        }
+      });
+      Swal.fire({
+        title: "Error!",
+        icon: "error",
+        text: "Tienes demasiadas citas elimina una para crear una nueva",
+        input: "select",
+        inputPlaceholder: "Citas",
+        confirmButtonText: "Eliminar",
+        inputOptions: { 0: options[0], 1: options[1], 2: options[2] },
+      }).then((e) => {
+        dlt = options[e.value];
+        firebase.firestore().collection("appointments").doc(dlt).delete();
+        firebase
+          .firestore()
+          .collection("idCounter")
+          .doc(this.clientInformation.id.trim().replace(/[^0-9]/g, ""))
+          .update({
+            counter: firebase.firestore.FieldValue.increment(-1),
+          });
+        firebase
+          .firestore()
+          .collection("appointments")
+          .orderBy("date")
+          .get()
+          .then((query) => {
+            this.db = [];
+            query.forEach((doc) => {
+              this.db.push(doc.data());
+            });
+          });
+      });
     },
   },
   created() {
+    Swal.fire({
+      title: "Información",
+      text: "Solo se puede hacer una reserva por vehiculo, si intentas reservar el mismo vehiculo dos veces la reserva será reemplazada",
+      icon: "info",
+      confirmButtonText: "Cerrar",
+    });
     firebase
       .firestore()
-      .collection("apointments")
+      .collection("appointments")
       .orderBy("date")
       .get()
       .then((query) => {
@@ -135,9 +271,6 @@ export default {
           this.db.push(doc.data());
         });
       });
-    // .then(() => {
-    //   console.log(this.db[0].date);
-    // });
   },
 };
 </script>

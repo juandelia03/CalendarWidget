@@ -6,6 +6,7 @@
         v-model="date"
         @click="test"
         color="green"
+        mode="dateTime"
         :is-expanded="stretch"
         :rows="2"
         style="margin-top: 40px"
@@ -55,7 +56,7 @@ export default {
   width: 100%;
 }
 .buttons {
-  margin: 10px;
+  margin: 100px;
   display: flex;
   justify-content: center;
   width: 100%;

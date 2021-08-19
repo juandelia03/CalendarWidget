@@ -12,6 +12,8 @@
         <p class="item">Apellido: {{ client.last }}</p>
         <p class="item">Telefono: {{ client.cell }}</p>
         <p class="item">Email: {{ client.email }}</p>
+        <p class="item">Cédula: {{ client.id }}</p>
+        <p class="item">Carro: {{ client.patente }}</p>
       </div>
       <div class="botones">
         <button class="boton" @click="$emit('cancel')">Cancelar</button>

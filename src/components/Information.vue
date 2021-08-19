@@ -26,6 +26,14 @@
           <label className="data">*Email</label>
         </div>
         <div className="section">
+          <input type="text" className="input-data" placeholder=" " v-model="patente" />
+          <label className="data">*Placa del vehiculo</label>
+        </div>
+        <div className="section">
+          <input type="text" className="input-data" placeholder=" " v-model="id" />
+          <label className="data">*Cédula(id)</label>
+        </div>
+        <div className="section">
           <input type="text" className="input-data" placeholder=" " v-model="message" />
           <label className="data">Mensaje</label>
         </div>
@@ -45,13 +53,15 @@ export default {
   components: {},
   data() {
     return {
-      name: "",
-      last: "",
-      cell: "",
-      email: "",
+      name: "Juan",
+      last: "delia",
+      cell: "38457068",
+      email: "juan@gmail.com",
       message: "",
       personalInfo: {},
       error: "",
+      id: "44851307",
+      patente: "aaa111",
     };
   },
   methods: {
@@ -61,7 +71,9 @@ export default {
         this.name.length > 1 &&
         this.last.length > 1 &&
         this.cell.length > 5 &&
-        this.email.includes("@")
+        this.email.includes("@") &&
+        this.patente.length > 4 &&
+        this.id.length > 5
       ) {
         const data = {
           name: this.name,
@@ -69,6 +81,8 @@ export default {
           cell: this.cell,
           email: this.email,
           message: this.message,
+          id: this.id,
+          patente: this.patente,
         };
         this.personalInfo = data;
         this.$emit("infoSubmited", this.personalInfo);
@@ -154,6 +168,7 @@ form {
   width: 100px;
   height: 40px;
   margin-top: 50px;
+  margin-bottom: 50px;
   background-color: white;
   color: black;
   outline: none;
