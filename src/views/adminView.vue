@@ -1,6 +1,9 @@
 <template>
   <div class="wrap">
-    <div class="chart" v-if="dbDownloaded == true">
+    <!-- <div v-if="dbDownloaded == false">
+      <div class="loader"></div>
+    </div> -->
+    <div class="chart" v-if="dbDownloaded == true && isAdmin == true">
       <AdminComp
         v-for="reservation in db"
         :key="reservation.ClientsInfo.patente.toUpperCase().replace(/[^\w\s!?]/g, '')"
@@ -16,7 +19,13 @@
       />
     </div>
     <div v-else>
-      <div class="loader"></div>
+      <div class="login">
+        <h1 class="title">Admin key</h1>
+        <div class="form">
+          <input class="txt" type="text" placeholder="key" v-model="key" />
+          <button @click="login">Submit</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -25,6 +34,7 @@
 import AdminComp from "../components/adminComp.vue";
 import firebase from "firebase/app";
 import firestore from "firebase/firestore";
+import Swal from "sweetalert2";
 export default {
   name: "adminView",
   components: { AdminComp },
@@ -32,6 +42,8 @@ export default {
     return {
       db: [],
       dbDownloaded: false,
+      isAdmin: false,
+      key: "",
     };
   },
   methods: {
@@ -47,6 +59,39 @@ export default {
         .doc(id)
         .update({
           counter: firebase.firestore.FieldValue.increment(-1),
+        });
+    },
+    login() {
+      let key = "";
+      firebase
+        .firestore()
+        .collection("key")
+        .doc("admin")
+        .get()
+        .then((doc) => {
+          key = doc.data();
+          if (this.key == key.key) {
+            this.isAdmin = true;
+            Swal.fire({
+              title: "Bienvenido Admin",
+              text: "",
+              icon: "success",
+              confirmButtonText: "Cerrar",
+              position: "top-right",
+              toast: true,
+              timer: 1500,
+            });
+          } else {
+            Swal.fire({
+              title: "Error",
+              text: "Key incorrecta",
+              icon: "error",
+              confirmButtonText: "Cerrar",
+              position: "top-right",
+              toast: true,
+              timer: 1500,
+            });
+          }
         });
     },
   },
@@ -97,6 +142,42 @@ export default {
   width: 120px;
   height: 120px;
   animation: spin 2s linear infinite;
+}
+.login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: whitesmoke;
+  width: 800px;
+  height: 800px;
+}
+.title {
+  margin-top: 150px;
+}
+.form {
+  display: flex;
+  flex-direction: column;
+  margin-top: 50px;
+}
+.txt {
+  margin-top: 20px;
+  padding: 0px 10px;
+  outline: none;
+  border: none;
+  width: 300px;
+  height: 50px;
+  border-radius: 5px;
+  font-size: 18px;
+}
+button {
+  font-size: 18px;
+  margin-top: 50px;
+  height: 50px;
+  border-radius: 25px;
+  border: none;
+  outline: none;
+  background-color: #14b9a9;
+  cursor: pointer;
 }
 
 @keyframes spin {
