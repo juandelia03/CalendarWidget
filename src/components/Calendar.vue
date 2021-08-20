@@ -1,10 +1,9 @@
 <template>
-  <div class="calendar">
+  <div class="calendar" @click="test">
     <h1 class="title">Select a date</h1>
     <div style="width: 100%">
       <DatePicker
         v-model="date"
-        @click="test"
         color="green"
         mode="dateTime"
         :is-expanded="stretch"

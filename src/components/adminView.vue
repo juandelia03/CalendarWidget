@@ -1,9 +1,11 @@
 <template>
-  <router-view />
+  <h1>hola</h1>
 </template>
 
 <script>
-export default {};
+export default {
+  name: "adminView",
+};
 </script>
 
 <style></style>
