@@ -1,6 +1,6 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import Home from "../views/Home.vue";
-import adminView from "../components/adminView.vue";
+import adminView from "../views/adminView.vue";
 
 const routes = [
   {
